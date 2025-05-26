@@ -7,12 +7,18 @@ import { redirect } from "next/navigation";
 export async function signUp(email: string, password: string, fullName: string) {
     const supabase = await createClient();
     
+    const redirectTo = `${process.env.NEXT_PUBLIC_SITE_URL}/auth/callback`|| 'http://localhost:3000/auth/callback';
+
+
     const { data, error } = await supabase.auth.signUp({
       email,
       password,
+
       options: {
+        emailRedirectTo: redirectTo,
         data: {
           full_name: fullName,
+          password: password,
         },
       },
     });

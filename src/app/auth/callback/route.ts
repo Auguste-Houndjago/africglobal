@@ -11,5 +11,5 @@ export async function GET(request: Request) {
   }
 
   // Rediriger vers la page register après l'authentification
-  return NextResponse.redirect(new URL('/register', requestUrl.origin));
+  return NextResponse.redirect(new URL('/auth/register', requestUrl.origin));
 }

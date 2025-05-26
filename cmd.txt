@@ -12,4 +12,13 @@ pnpm dlx shadcn@latest add button input checkbox
 ##supabase
 
     pnpm i @supabase/ssr
+    
+    CMD PNPM
+    
+    
+    #SUPABASE
     pnpm i @supabase/supabase-js
+
+
+    #PRISMA 
+    pnpm add -D prisma
