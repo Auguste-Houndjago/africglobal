@@ -42,7 +42,7 @@ export default function RoleSelector() {
               <Card
                 key={role.id}
                 className={cn(
-                  "relative cursor-pointer transition-all duration-200 hover:scale-105",
+                  "relative cursor-pointer transition-all z-50 duration-200 hover:scale-105",
                   isSelected
                     ? "bg-green-500 border-green-500 text-white"
                     : "bg-white border-gray-200 hover:border-green-300",
