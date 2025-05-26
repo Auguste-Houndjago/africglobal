@@ -8,7 +8,7 @@ import { cn } from "@/lib/utils"
 type Role = "exporter" | "investor" | null
 
 export default function RoleSelector() {
-  const [selectedRole, setSelectedRole] = useState<Role>("investor")
+  const [selectedRole, setSelectedRole] = useState<Role>(null)
 
   const roles = [
     {
@@ -24,7 +24,7 @@ export default function RoleSelector() {
   ]
 
   return (
-    <div className="min-h-screen  flex items-center justify-center p-6">
+    <div className="min-h-screen bg-gray-50 flex items-center justify-center p-6">
       <div className="w-full max-w-4xl mx-auto text-center">
         {/* Logo */}
         <div className="mb-12">
@@ -47,7 +47,7 @@ export default function RoleSelector() {
                     ? "bg-green-500 border-green-500 text-white"
                     : "bg-white border-gray-200 hover:border-green-300",
                 )}
-                onClick={() => setSelectedRole(role.id)}
+                onClick={() => setSelectedRole(selectedRole === role.id ? null : role.id)}
               >
                 <CardContent className="p-12 text-center">
                   {/* Check mark for selected state */}
@@ -75,7 +75,6 @@ export default function RoleSelector() {
           })}
         </div>
 
-        {/* Selected Role Display */}
         {selectedRole && (
           <div className="mt-8 p-4 bg-green-100 rounded-lg max-w-md mx-auto">
             <p className="text-green-800">
