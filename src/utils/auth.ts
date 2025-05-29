@@ -5,52 +5,30 @@ import { redirect } from "next/navigation";
 import { prisma } from "@/lib/prisma";
 
 export async function signUp(email: string, password: string, fullName: string) {
-    try {
-      const supabase = await createClient();
-      
-      const redirectTo = `${process.env.NEXT_PUBLIC_SITE_URL}/auth/callback`|| 'http://localhost:3000/auth/callback';
-
-      const { data, error: supabaseError } = await supabase.auth.signUp({
+  try {
+    const response = await fetch('/api/auth/signup', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
         email,
         password,
-        options: {
-          emailRedirectTo: redirectTo,
-          data: {
-            full_name: fullName,
-          },
-        },
-      });
-    
-      if (supabaseError) {
-        console.error("[SUPABASE_SIGNUP_ERROR]", supabaseError);
-        throw new Error(`Erreur d'inscription: ${supabaseError.message}`);
-      }
+        fullName,
+      }),
+    });
 
-      // Créer l'utilisateur dans Prisma
-      if (data.user) {
-        try {
-          await prisma.user.create({
-            data: {
-              id: data.user.id,
-              email: data.user.email!,
-              fullName: fullName,
-              role: "investor", // valeur par défaut
-            },
-          });
-        } catch (prismaError: any) {
-          console.error("[PRISMA_CREATE_ERROR]", prismaError);
-          // Si l'erreur est due à un utilisateur existant, on continue
-          if (prismaError.code !== 'P2002') {
-            throw new Error(`Erreur de création du profil: ${prismaError.message}`);
-          }
-        }
-      }
-    
-      return data;
-    } catch (error: any) {
-      console.error("[SIGNUP_ERROR]", error);
-      throw new Error(error.message || "Une erreur est survenue lors de l'inscription");
+    const data = await response.json();
+
+    if (!response.ok) {
+      throw new Error(data.error || 'Registration failed');
     }
+
+    return data;
+  } catch (error: any) {
+    console.error("[SIGNUP_ERROR]", error);
+    throw new Error(error.message || "An error occurred during registration");
+  }
 }
   
 
