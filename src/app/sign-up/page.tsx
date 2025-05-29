@@ -1,5 +1,6 @@
 "use client";
 
+
 import Image from "next/image"
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
@@ -8,7 +9,6 @@ import { Checkbox } from "@/components/ui/checkbox"
 import { ArrowRight } from "lucide-react"
 import { FaGoogle } from "react-icons/fa"
 import { useState } from "react"
-import { useRouter } from "next/navigation"
 import { signUp } from "@/utils/auth";
 import { useToast } from "@/hooks/use-toast"
 
@@ -39,26 +39,42 @@ export default function SignupPage() {
 
     if (formData.password !== formData.confirmPassword) {
       setError("Passwords do not match");
+      toast({
+        title: "Error",
+        description: "Passwords do not match",
+        variant: "destructive",
+      });
       setLoading(false);
       return;
     }
 
     if (!formData.terms) {
       setError("Please accept the terms and conditions");
+      toast({
+        title: "Error",
+        description: "Please accept the terms and conditions",
+        variant: "destructive",
+      });
       setLoading(false);
       return;
     }
 
     try {
       await signUp(formData.email, formData.password, formData.fullName);
-      // router.push("/login");
+      
       toast({
         title: "Registration Successful",
         description: `Please check your email at ${formData.email} to confirm your registration.`,
-      })
+      });
 
     } catch (err: any) {
-      setError(err.message || "An error occurred during registration");
+      const errorMessage = err.message || "An error occurred during registration";
+      setError(errorMessage);
+      toast({
+        title: "Registration Error",
+        description: errorMessage,
+        variant: "destructive",
+      });
     } finally {
       setLoading(false);
     }
