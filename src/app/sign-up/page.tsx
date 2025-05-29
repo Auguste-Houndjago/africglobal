@@ -10,9 +10,10 @@ import { FaGoogle } from "react-icons/fa"
 import { useState } from "react"
 import { useRouter } from "next/navigation"
 import { signUp } from "@/utils/auth";
+import { useToast } from "@/hooks/use-toast"
 
 export default function SignupPage() {
-  const router = useRouter();
+  const { toast } = useToast()
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [formData, setFormData] = useState({
@@ -50,7 +51,12 @@ export default function SignupPage() {
 
     try {
       await signUp(formData.email, formData.password, formData.fullName);
-      router.push("/login"); // Redirect to login page after successful registration
+      // router.push("/login");
+      toast({
+        title: "Registration Successful",
+        description: `Please check your email at ${formData.email} to confirm your registration.`,
+      })
+
     } catch (err: any) {
       setError(err.message || "An error occurred during registration");
     } finally {
@@ -58,7 +64,7 @@ export default function SignupPage() {
     }
   };
 
-  return (
+  return (  
     <div className="flex flex-col md:flex-row min-h-screen">
       {/* Left side - Form */}
       <div className="flex-1 flex flex-col items-center justify-center p-6 md:p-10 lg:p-16">

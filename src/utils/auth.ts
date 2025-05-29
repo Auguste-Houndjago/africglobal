@@ -1,19 +1,17 @@
 "use server";
 
 import { createClient } from "./supabase/server";
-
 import { redirect } from "next/navigation";
+import { prisma } from "@/lib/prisma";
 
 export async function signUp(email: string, password: string, fullName: string) {
     const supabase = await createClient();
     
     const redirectTo = `${process.env.NEXT_PUBLIC_SITE_URL}/auth/callback`|| 'http://localhost:3000/auth/callback';
 
-
     const { data, error } = await supabase.auth.signUp({
       email,
       password,
-
       options: {
         emailRedirectTo: redirectTo,
         data: {
@@ -25,6 +23,18 @@ export async function signUp(email: string, password: string, fullName: string) 
   
     if (error) {
       throw error;
+    }
+
+    // Créer l'utilisateur dans Prisma
+    if (data.user) {
+      await prisma.user.create({
+        data: {
+          id: data.user.id,
+          email: data.user.email!,
+          fullName: fullName,
+          role: "investor", // valeur par défaut
+        },
+      });
     }
   
     return data;
@@ -68,14 +78,11 @@ export async function getSession() {
   return session;
 }
 
-export async function getUser() {
-  const session = await getSession();
-  return session?.user ?? null;
-}
 
 export async function requireAuth() {
-  const user = await getUser();
-  
+  const supabase = await createClient();
+  const { data: { user }, error } = await supabase.auth.getUser();
+
   if (!user) {
     redirect("/login");
   }
