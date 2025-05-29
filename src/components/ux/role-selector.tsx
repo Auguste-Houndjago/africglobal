@@ -39,7 +39,7 @@ export default function RoleSelector({ onRoleChange, defaultRole = "investor" }:
 
       toast({
         title: "Rôle mis à jour",
-        description: "Votre rôle a été mis à jour avec succès.",
+        description: "Votre rôle a été mis à jour avec succès .",
       })
 
       // Rediriger vers la page d'accueil après la sélection du rôle
